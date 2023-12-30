@@ -21,23 +21,41 @@ const Feed = () => {
 
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
+  const [data, setData] = useState([])
   
   const handleSearchChange = (e) => {
-
+    setSearchText(e.target.value);
   }
 
+
   useEffect(() => {
-
-    const fetchPosts = async () => {
-      const response = await fetch('/api/prompt');
-      const data = await response.json();
-
-      setPosts(data);
+    const filterPosts = () => {
+      if(searchText !== "")
+      {
+        const fetchPosts = async () => {
+          const filteredPosts = data.filter((p) => p.creator.username.includes(searchText) || p.prompt.includes(searchText) || p.tag === searchText);
+          setPosts(filteredPosts);
+        }
+        fetchPosts();
+      }
+      else
+      {
+        const fetchPosts = async () => {
+          const response = await fetch('/api/prompt');
+          const data = await response.json();
+          setData(data);
+          setPosts(data);
+        }
+    
+        fetchPosts();
+      }
     }
 
-    fetchPosts();
+    filterPosts();
 
-  }, []);
+  }, [searchText]);
+
+
 
   return (
     <section className="feed">
@@ -54,7 +72,7 @@ const Feed = () => {
 
       <PromptCardList
         data={posts}
-        handleTagClick={() => {}}
+        handleTagClick={(tag) => {setSearchText(tag)}}
       />
 
     </section>
