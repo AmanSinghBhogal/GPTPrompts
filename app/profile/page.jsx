@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Profile from "@components/Profile";
 
 const MyProfile = () => {
 
     const router = useRouter();
     const { data: session } = useSession();
+    const searchParams = useSearchParams();
+    const UserName = searchParams.get('username');
+    const UserId = searchParams.get('id');
 
     const [posts, setPosts] = useState([]);
 
@@ -20,12 +23,24 @@ const MyProfile = () => {
     
           setPosts(data);
         }
+
+        const fetchUserPosts = async () => {
+            const response = await fetch(`/api/users/${UserId}/posts`);
+            const data = await response.json();
+    
+            setPosts(data);
+        }
     
         
-        if(session?.user.id)
+        if(session?.user.id && !UserName)
         {    
             fetchPosts();
             console.log(posts);
+        }
+        else if(UserName && UserId)
+        {
+            console.log(`User name is: ${UserName} and id: ${UserId}`);
+            fetchUserPosts();
         }
     
       }, []);
@@ -58,6 +73,13 @@ const MyProfile = () => {
     }
 
     return (
+        UserId !== null? <Profile
+            name={session?.user.id === UserId? "My": `${UserName[0].toUpperCase() + UserName.slice(1)}'s`}
+            desc={session?.user.id === UserId? "Welcome to your personalized profile page": `Welcome to ${UserName[0].toUpperCase() + UserName.slice(1)}'s profile page`}
+            data={posts}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+        /> :
         <Profile
             name="My"
             desc="Welcome to your personalized profile page"

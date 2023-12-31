@@ -1,5 +1,6 @@
 'use client';
 
+import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
@@ -26,26 +27,28 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
     <div className="prompt_card">
       <div className="flex justify-between items-start gap-5">
 
-        <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
+        <Link href={`/profile?id=${post?.creator._id}&username=${post?.creator.username}`}>
+          <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
 
-          <Image 
-            src={post?.creator.image}
-            alt="User Image not found"
-            width={40}
-            height={40}
-            className="rounded-full object-contain"
-          />
+              <Image 
+                src={post?.creator.image}
+                alt="User Image not found"
+                width={40}
+                height={40}
+                className="rounded-full object-contain"
+              />
 
-          <div className="flex flex-col">
-            <h3 className="font-satoshi font-semibold text-grey-900">
-              {post.creator.username}
-            </h3>
-            <p className="font-inter text-sm text-grey-500">
-              {post.creator.email}
-            </p>
-          </div>
+              <div className="flex flex-col">
+                <h3 className="font-satoshi font-semibold text-grey-900">
+                  {post.creator.username}
+                </h3>
+                <p className="font-inter text-sm text-grey-500">
+                  {post.creator.email}
+                </p>
+              </div>
 
-        </div>
+            </div>
+        </Link>
 
         <div className="copy_btn" onClick={handleCopy}>
           <Image
