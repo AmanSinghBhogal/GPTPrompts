@@ -3,6 +3,7 @@
 import { connectToDB } from "@utils/database";
 import Prompt from "@models/prompt";
 
+export const revalidate = 1; //revalidate api every 1 second
 // GET endpoint:  GET from 'http://localhost:3000/api/prompt/[id]'
 export const GET = async (request, { params }) => {
     try {
